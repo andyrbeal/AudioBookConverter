@@ -1,0 +1,1417 @@
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:ignore
+   - *.hg
+*.hgignore
+
+   + *.hg
+*.hgignore
+Build
+
+
+Index: Source/C++/Core/Ap4.h
+===================================================================
+--- Source/C++/Core/Ap4.h	(revision 303)
++++ Source/C++/Core/Ap4.h	(working copy)
+@@ -263,6 +263,8 @@
+ #include "Ap4VmhdAtom.h"
+ #include "Ap4SmhdAtom.h"
+ #include "Ap4NmhdAtom.h"
++#include "Ap4GminAtom.h"
++#include "Ap4GmhdTextAtom.h"
+ #include "Ap4HmhdAtom.h"
+ #include "Ap4SchmAtom.h"
+ #include "Ap4FrmaAtom.h"
+@@ -282,5 +284,6 @@
+ #include "Ap4AvccAtom.h"
+ #include "Ap4Marlin.h"
+ #include "Ap4GrpiAtom.h"
++#include "Ap4AlisAtom.h"
+ 
+ #endif // _AP4_H_
+Index: Source/C++/Core/Ap4AlisAtom.cpp
+===================================================================
+--- Source/C++/Core/Ap4AlisAtom.cpp	(revision 0)
++++ Source/C++/Core/Ap4AlisAtom.cpp	(revision 0)
+@@ -0,0 +1,103 @@
++/*****************************************************************
++|
++|    AP4 - alis Atoms 
++|
++|    Copyright 2002-2008 Axiomatic Systems, LLC
++|
++|
++|    This file is part of Bento4/AP4 (MP4 Atom Processing Library).
++|
++|    Unless you have obtained Bento4 under a difference license,
++|    this version of Bento4 is Bento4|GPL.
++|    Bento4|GPL is free software; you can redistribute it and/or modify
++|    it under the terms of the GNU General Public License as published by
++|    the Free Software Foundation; either version 2, or (at your option)
++|    any later version.
++|
++|    Bento4|GPL is distributed in the hope that it will be useful,
++|    but WITHOUT ANY WARRANTY; without even the implied warranty of
++|    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++|    GNU General Public License for more details.
++|
++|    You should have received a copy of the GNU General Public License
++|    along with Bento4|GPL; see the file COPYING.  If not, write to the
++|    Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
++|    02111-1307, USA.
++|
++ ****************************************************************/
++
++/*----------------------------------------------------------------------
++|   includes
+++---------------------------------------------------------------------*/
++#include "Ap4AlisAtom.h"
++#include "Ap4AtomFactory.h"
++#include "Ap4Utils.h"
++
++/*----------------------------------------------------------------------
++|   AP4_UrlAtom::Create
+++---------------------------------------------------------------------*/
++AP4_AlisAtom*
++AP4_AlisAtom::Create(AP4_Size size, AP4_ByteStream& stream)
++{
++    AP4_UI32 version;
++    AP4_UI32 flags;
++    if (AP4_FAILED(AP4_Atom::ReadFullHeader(stream, version, flags))) return NULL;
++    if (version != 0) return NULL;
++    return new AP4_AlisAtom(size, version, flags, stream);
++}
++
++/*----------------------------------------------------------------------
++|   AP4_UrlAtom::AP4_UrlAtom
+++---------------------------------------------------------------------*/
++AP4_AlisAtom::AP4_AlisAtom() :
++    AP4_Atom(AP4_ATOM_TYPE_ALIS, AP4_FULL_ATOM_HEADER_SIZE, 0, 1)
++{
++}
++
++/*----------------------------------------------------------------------
++|   AP4_UrlAtom::AP4_UrlAtom
+++---------------------------------------------------------------------*/
++AP4_AlisAtom::AP4_AlisAtom(AP4_UI32        size, 
++                         AP4_UI32        version,
++                         AP4_UI32        flags,
++                         AP4_ByteStream& stream) :
++    AP4_Atom(AP4_ATOM_TYPE_URL, size, version, flags)
++{
++    
++  
++}
++
++/*----------------------------------------------------------------------
++|   AP4_UrlAtom::WriteFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_AlisAtom::WriteFields(AP4_ByteStream& stream)
++{
++    if (m_Flags & 1) {
++        // local ref (self contained)
++        return AP4_SUCCESS;
++    } /*else {
++        // url (not self contained)
++        if (m_Size32 > AP4_FULL_ATOM_HEADER_SIZE) {
++            AP4_Result result = stream.Write(m_Url.GetChars(), m_Url.GetLength()+1);
++            if (AP4_FAILED(result)) return result;
++
++            // pad with zeros if necessary
++            AP4_Size padding = m_Size32-(AP4_FULL_ATOM_HEADER_SIZE+m_Url.GetLength()+1);
++            while (padding--) stream.WriteUI08(0);
++        }
++       }*/
++        return AP4_SUCCESS;
++    
++}
++
++/*----------------------------------------------------------------------
++|   AP4_UrlAtom::InspectFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_AlisAtom::InspectFields(AP4_AtomInspector& inspector)
++{
++
++
++    return AP4_SUCCESS;
++}
+Index: Source/C++/Core/Ap4AlisAtom.h
+===================================================================
+--- Source/C++/Core/Ap4AlisAtom.h	(revision 0)
++++ Source/C++/Core/Ap4AlisAtom.h	(revision 0)
+@@ -0,0 +1,63 @@
++/*****************************************************************
++|
++|    AP4 - alis Atoms 
++|
++|    Copyright 2002-2008 Axiomatic Systems, LLC
++|
++|
++|    This file is part of Bento4/AP4 (MP4 Atom Processing Library).
++|
++|    Unless you have obtained Bento4 under a difference license,
++|    this version of Bento4 is Bento4|GPL.
++|    Bento4|GPL is free software; you can redistribute it and/or modify
++|    it under the terms of the GNU General Public License as published by
++|    the Free Software Foundation; either version 2, or (at your option)
++|    any later version.
++|
++|    Bento4|GPL is distributed in the hope that it will be useful,
++|    but WITHOUT ANY WARRANTY; without even the implied warranty of
++|    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++|    GNU General Public License for more details.
++|
++|    You should have received a copy of the GNU General Public License
++|    along with Bento4|GPL; see the file COPYING.  If not, write to the
++|    Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
++|    02111-1307, USA.
++|
++ ****************************************************************/
++
++#ifndef _AP4_ALIS_ATOM_H_
++#define _AP4_ALIS_ATOM_H_
++
++/*----------------------------------------------------------------------
++|   includes
+++---------------------------------------------------------------------*/
++#include "Ap4Atom.h"
++#include "Ap4String.h"
++
++/*----------------------------------------------------------------------
++|   AP4_AlisAtom
+++---------------------------------------------------------------------*/
++class AP4_AlisAtom : public AP4_Atom
++{
++public:
++    // class methods
++    static AP4_AlisAtom* Create(AP4_Size size, AP4_ByteStream& stream);
++
++    // methods
++    AP4_AlisAtom(); // local ref only (no URL string)
++    virtual AP4_Result InspectFields(AP4_AtomInspector& inspector);
++    virtual AP4_Result WriteFields(AP4_ByteStream& stream);
++
++private:
++    // methods
++    AP4_AlisAtom(AP4_UI32        size, 
++                AP4_UI32        version,
++                AP4_UI32        flags,
++                AP4_ByteStream& stream);
++
++    // members
++
++};
++
++#endif // _AP4_ALIS_ATOM_H_
+Index: Source/C++/Core/Ap4Atom.h
+===================================================================
+--- Source/C++/Core/Ap4Atom.h	(revision 303)
++++ Source/C++/Core/Ap4Atom.h	(working copy)
+@@ -383,6 +383,11 @@
+ const AP4_Atom::Type AP4_ATOM_TYPE_WIDE = AP4_ATOM_TYPE('w','i','d','e');
+ const AP4_Atom::Type AP4_ATOM_TYPE_UUID = AP4_ATOM_TYPE('u','u','i','d');
+ const AP4_Atom::Type AP4_ATOM_TYPE_8ID_ = AP4_ATOM_TYPE('8','i','d',' ');
++const AP4_Atom::Type AP4_ATOM_TYPE_GMHD = AP4_ATOM_TYPE('g','m','h','d');
++const AP4_Atom::Type AP4_ATOM_TYPE_GMIN = AP4_ATOM_TYPE('g','m','i','n');
++const AP4_Atom::Type AP4_ATOM_TYPE_ALIS = AP4_ATOM_TYPE('a','l','i','s');
++const AP4_Atom::Type AP4_ATOM_TYPE_TEXT = AP4_ATOM_TYPE('t','e','x','t');
++const AP4_Atom::Type AP4_ATOM_TYPE_CHAP = AP4_ATOM_TYPE('c','h','a','p');
+ 
+ /*----------------------------------------------------------------------
+ |   AP4_AtomListInspector
+Index: Source/C++/Core/Ap4AtomFactory.cpp
+===================================================================
+--- Source/C++/Core/Ap4AtomFactory.cpp	(revision 303)
++++ Source/C++/Core/Ap4AtomFactory.cpp	(working copy)
+@@ -35,6 +35,7 @@
+ #include "Ap4UuidAtom.h"
+ #include "Ap4IsmaCryp.h"
+ #include "Ap4UrlAtom.h"
++#include "Ap4AlisAtom.h"
+ #include "Ap4MoovAtom.h"
+ #include "Ap4MvhdAtom.h"
+ #include "Ap4MfhdAtom.h"
+@@ -61,6 +62,8 @@
+ #include "Ap4SmhdAtom.h"
+ #include "Ap4NmhdAtom.h"
+ #include "Ap4HmhdAtom.h"
++#include "Ap4GmhdTextAtom.h"
++#include "Ap4GminAtom.h"
+ #include "Ap4ElstAtom.h"
+ #include "Ap4SchmAtom.h"
+ #include "Ap4FrmaAtom.h"
+@@ -378,6 +381,11 @@
+         if (atom_is_large) return AP4_ERROR_INVALID_FORMAT;
+         atom = AP4_UrlAtom::Create(size_32, stream);
+         break;
++      
++      case AP4_ATOM_TYPE_ALIS:
++        if (atom_is_large) return AP4_ERROR_INVALID_FORMAT;
++        atom = AP4_AlisAtom::Create(size_32, stream);
++        break;
+ 
+       case AP4_ATOM_TYPE_ELST:
+         if (atom_is_large) return AP4_ERROR_INVALID_FORMAT;
+@@ -482,6 +490,23 @@
+         atom = AP4_IproAtom::Create(size_32, stream, *this);
+         break;
+ 
++      case AP4_ATOM_TYPE_GMIN:
++        if (atom_is_large) return AP4_ERROR_INVALID_FORMAT;
++        atom = AP4_GminAtom::Create(size_32, stream);
++        break;
++      
++      case AP4_ATOM_TYPE_TEXT:
++        // [text] atoms can be found in two places but are
++        // different formats, one is a sample entry the other
++        // a header subset.
++          if (GetContext() == AP4_ATOM_TYPE_STSD) {
++              atom = new AP4_TextSampleEntry(size_32, stream, *this);
++          }
++          if (GetContext() == AP4_ATOM_TYPE_GMHD) {
++            atom = AP4_GmhdTextAtom::Create(size_32, stream);
++          }
++        break;
++
+       // track ref types
+       case AP4_ATOM_TYPE_HINT:
+       case AP4_ATOM_TYPE_CDSC:
+@@ -489,6 +514,7 @@
+       case AP4_ATOM_TYPE_MPOD:
+       case AP4_ATOM_TYPE_DPND:
+       case AP4_ATOM_TYPE_IPIR:
++      case AP4_ATOM_TYPE_CHAP:
+         if (GetContext() == AP4_ATOM_TYPE_TREF) {
+             if (atom_is_large) return AP4_ERROR_INVALID_FORMAT;
+             atom = AP4_TrefTypeAtom::Create(type, size_32, stream);
+@@ -514,6 +540,7 @@
+       case AP4_ATOM_TYPE_EDTS: 
+       case AP4_ATOM_TYPE_MDRI:
+       case AP4_ATOM_TYPE_WAVE:
++      case AP4_ATOM_TYPE_GMHD:
+         if (atom_is_large) return AP4_ERROR_INVALID_FORMAT;
+         atom = AP4_ContainerAtom::Create(type, size, false, force_64, stream, *this);
+         break;
+Index: Source/C++/Core/Ap4GmhdTextAtom.cpp
+===================================================================
+--- Source/C++/Core/Ap4GmhdTextAtom.cpp	(revision 0)
++++ Source/C++/Core/Ap4GmhdTextAtom.cpp	(revision 0)
+@@ -0,0 +1,109 @@
++/*****************************************************************
++|
++|    AP4 - text (gmhd) Atoms 
++|
++|    Copyright 2002-2008 Axiomatic Systems, LLC
++|
++|
++|    This file is part of Bento4/AP4 (MP4 Atom Processing Library).
++|
++|    Unless you have obtained Bento4 under a difference license,
++|    this version of Bento4 is Bento4|GPL.
++|    Bento4|GPL is free software; you can redistribute it and/or modify
++|    it under the terms of the GNU General Public License as published by
++|    the Free Software Foundation; either version 2, or (at your option)
++|    any later version.
++|
++|    Bento4|GPL is distributed in the hope that it will be useful,
++|    but WITHOUT ANY WARRANTY; without even the implied warranty of
++|    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++|    GNU General Public License for more details.
++|
++|    You should have received a copy of the GNU General Public License
++|    along with Bento4|GPL; see the file COPYING.  If not, write to the
++|    Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
++|    02111-1307, USA.
++|
++****************************************************************/
++
++/*----------------------------------------------------------------------
++|   includes
+++---------------------------------------------------------------------*/
++#include "Ap4GmhdTextAtom.h"
++#include "Ap4AtomFactory.h"
++#include "Ap4Utils.h"
++#include "Ap4Types.h"
++
++/*----------------------------------------------------------------------
++|   AP4_GmhdTextAtom::Create
+++---------------------------------------------------------------------*/
++AP4_GmhdTextAtom*
++AP4_GmhdTextAtom::Create(AP4_Size size, AP4_ByteStream& stream)
++{
++    return new AP4_GmhdTextAtom(size, stream);
++}
++
++/*----------------------------------------------------------------------
++|   AP4_GmhdTextAtom::AP4_GmhdTextAtom
+++---------------------------------------------------------------------*/
++AP4_GmhdTextAtom::AP4_GmhdTextAtom() :
++    AP4_Atom(AP4_ATOM_TYPE_TEXT, AP4_ATOM_HEADER_SIZE+36)
++    
++{     
++	m_TextData[0] = 0x00010000;
++	m_TextData[1] = 0x00000000;
++	m_TextData[2] = 0x00000000;
++	m_TextData[3] = 0x00000000;
++	m_TextData[4] = 0x00010000;
++	m_TextData[5] = 0x00000000;
++	m_TextData[6] = 0x00000000;
++	m_TextData[7] = 0x00000000;
++	m_TextData[8] = 0x40000000;
++ 
++
++}
++
++/*----------------------------------------------------------------------
++|   AP4_GmhdTextAtom::AP4_GmhdTextAtom
+++---------------------------------------------------------------------*/
++AP4_GmhdTextAtom::AP4_GmhdTextAtom(AP4_UI32        size, AP4_ByteStream& stream) :
++    AP4_Atom(AP4_ATOM_TYPE_TEXT, size)
++{
++	
++	for (int x=0;x<9;x++){
++    stream.ReadUI32(m_TextData[x]);
++	}
++
++}
++
++/*----------------------------------------------------------------------
++|   AP4_GmhdTextAtom::WriteFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_GmhdTextAtom::WriteFields(AP4_ByteStream& stream)
++{
++    AP4_Result result;
++
++	result = stream.Write(m_TextData, sizeof(m_TextData));
++    if (AP4_FAILED(result)) return result;
++
++
++    return AP4_SUCCESS;
++}
++
++/*----------------------------------------------------------------------
++|   AP4_GmhdTextAtom::InspectFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_GmhdTextAtom::InspectFields(AP4_AtomInspector& inspector)
++{
++    char formatted[9];
++    AP4_FormatString(formatted, sizeof(formatted), "%08x,%08x,%08x,%08x,%08x,%08x,%08x,%08x,%08x",
++													m_TextData[0], m_TextData[1], m_TextData[2],
++													m_TextData[3], m_TextData[4], m_TextData[5],
++													m_TextData[6], m_TextData[7], m_TextData[8]);
++    inspector.AddField("text_data", formatted);
++
++
++    return AP4_SUCCESS;
++}
+Index: Source/C++/Core/Ap4GmhdTextAtom.h
+===================================================================
+--- Source/C++/Core/Ap4GmhdTextAtom.h	(revision 0)
++++ Source/C++/Core/Ap4GmhdTextAtom.h	(revision 0)
+@@ -0,0 +1,61 @@
++/*****************************************************************
++|
++|    AP4 - text (gmhd) Atoms 
++|
++|    Copyright 2002-2008 Axiomatic Systems, LLC
++|
++|
++|    This file is part of Bento4/AP4 (MP4 Atom Processing Library).
++|
++|    Unless you have obtained Bento4 under a difference license,
++|    this version of Bento4 is Bento4|GPL.
++|    Bento4|GPL is free software; you can redistribute it and/or modify
++|    it under the terms of the GNU General Public License as published by
++|    the Free Software Foundation; either version 2, or (at your option)
++|    any later version.
++|
++|    Bento4|GPL is distributed in the hope that it will be useful,
++|    but WITHOUT ANY WARRANTY; without even the implied warranty of
++|    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++|    GNU General Public License for more details.
++|
++|    You should have received a copy of the GNU General Public License
++|    along with Bento4|GPL; see the file COPYING.  If not, write to the
++|    Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
++|    02111-1307, USA.
++|
++****************************************************************/
++
++#ifndef _AP4_GMHDTEXT_ATOM_H_
++#define _AP4_GMHDTEXT_ATOM_H_
++
++/*----------------------------------------------------------------------
++|   includes
+++---------------------------------------------------------------------*/
++#include "Ap4Atom.h"
++
++/*----------------------------------------------------------------------
++|   AP4_GmhdAtom
+++---------------------------------------------------------------------*/
++class AP4_GmhdTextAtom : public AP4_Atom
++{
++public:
++    // class methods
++    static AP4_GmhdTextAtom* Create(AP4_Size size, AP4_ByteStream& stream);
++
++    // methods
++    AP4_GmhdTextAtom();
++    virtual AP4_Result InspectFields(AP4_AtomInspector& inspector);
++    virtual AP4_Result WriteFields(AP4_ByteStream& stream);
++
++private:
++    // methods
++    AP4_GmhdTextAtom(AP4_UI32 size, AP4_ByteStream& stream);
++
++    // members
++    AP4_UI32 m_TextData[9];
++
++
++};
++
++#endif // _AP4_GMHDTEXT_ATOM_H_
+Index: Source/C++/Core/Ap4GminAtom.cpp
+===================================================================
+--- Source/C++/Core/Ap4GminAtom.cpp	(revision 0)
++++ Source/C++/Core/Ap4GminAtom.cpp	(revision 0)
+@@ -0,0 +1,131 @@
++/*****************************************************************
++|
++|    AP4 - gmin Atoms 
++|
++|    Copyright 2002-2008 Axiomatic Systems, LLC
++|
++|
++|    This file is part of Bento4/AP4 (MP4 Atom Processing Library).
++|
++|    Unless you have obtained Bento4 under a difference license,
++|    this version of Bento4 is Bento4|GPL.
++|    Bento4|GPL is free software; you can redistribute it and/or modify
++|    it under the terms of the GNU General Public License as published by
++|    the Free Software Foundation; either version 2, or (at your option)
++|    any later version.
++|
++|    Bento4|GPL is distributed in the hope that it will be useful,
++|    but WITHOUT ANY WARRANTY; without even the implied warranty of
++|    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++|    GNU General Public License for more details.
++|
++|    You should have received a copy of the GNU General Public License
++|    along with Bento4|GPL; see the file COPYING.  If not, write to the
++|    Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
++|    02111-1307, USA.
++|
++****************************************************************/
++
++/*----------------------------------------------------------------------
++|   includes
+++---------------------------------------------------------------------*/
++#include "Ap4GminAtom.h"
++#include "Ap4AtomFactory.h"
++#include "Ap4Utils.h"
++#include "Ap4Types.h"
++
++/*----------------------------------------------------------------------
++|   AP4_GminAtom::Create
+++---------------------------------------------------------------------*/
++AP4_GminAtom*
++AP4_GminAtom::Create(AP4_Size size, AP4_ByteStream& stream)
++{
++    AP4_UI32 version;
++    AP4_UI32 flags;
++    if (AP4_FAILED(AP4_Atom::ReadFullHeader(stream, version, flags))) return NULL;
++    if (version != 0) return NULL;
++    return new AP4_GminAtom(size, version, flags, stream);
++}
++
++/*----------------------------------------------------------------------
++|   AP4_GminAtom::AP4_GminAtom
+++---------------------------------------------------------------------*/
++AP4_GminAtom::AP4_GminAtom(AP4_UI16 graphics_mode, AP4_UI16 red, AP4_UI16 green, AP4_UI16 blue, AP4_UI16 balance) :
++    AP4_Atom(AP4_ATOM_TYPE_GMIN, AP4_FULL_ATOM_HEADER_SIZE+12, 0, 0),
++    m_GraphicsMode(graphics_mode)
++{     
++    m_OpColorRed = red;
++    m_OpColorGreen = green;
++    m_OpColorBlue = blue;
++    m_Balance = balance;
++    m_Reserved = 0;
++}
++
++/*----------------------------------------------------------------------
++|   AP4_GminAtom::AP4_GminAtom
+++---------------------------------------------------------------------*/
++AP4_GminAtom::AP4_GminAtom(AP4_UI32        size, 
++                           AP4_UI32        version,
++                           AP4_UI32        flags,
++                           AP4_ByteStream& stream) :
++    AP4_Atom(AP4_ATOM_TYPE_GMIN, size, version, flags)
++{
++    stream.ReadUI16(m_GraphicsMode);
++    stream.ReadUI16(m_OpColorRed);
++    stream.ReadUI16(m_OpColorGreen);
++    stream.ReadUI16(m_OpColorBlue);
++    stream.ReadUI16(m_Balance);
++    stream.ReadUI16(m_Reserved);
++
++}
++
++/*----------------------------------------------------------------------
++|   AP4_GminAtom::WriteFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_GminAtom::WriteFields(AP4_ByteStream& stream)
++{
++    AP4_Result result;
++
++    // graphics mode
++    result = stream.WriteUI16(m_GraphicsMode);
++    if (AP4_FAILED(result)) return result;
++
++    // op color red
++    result = stream.WriteUI16(m_OpColorRed);
++    if (AP4_FAILED(result)) return result;
++
++    // op color Green
++    result = stream.WriteUI16(m_OpColorGreen);
++    if (AP4_FAILED(result)) return result;
++
++    // op color blue
++    result = stream.WriteUI16(m_OpColorBlue);
++    if (AP4_FAILED(result)) return result;
++
++    // color balance
++    result = stream.WriteUI16(m_Balance);
++    if (AP4_FAILED(result)) return result;
++
++    //Reserved bytes
++    result = stream.WriteUI16(m_Reserved);
++    if (AP4_FAILED(result)) return result;
++
++    return AP4_SUCCESS;
++}
++
++/*----------------------------------------------------------------------
++|   AP4_GminAtom::InspectFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_GminAtom::InspectFields(AP4_AtomInspector& inspector)
++{
++    inspector.AddField("graphics_mode", m_GraphicsMode);
++    inspector.AddField("op_color_red", m_OpColorRed);
++    inspector.AddField("op_color_green", m_OpColorGreen);
++    inspector.AddField("op_color_blue", m_OpColorBlue);
++    inspector.AddField("color_balance", m_Balance);
++
++
++    return AP4_SUCCESS;
++}
+Index: Source/C++/Core/Ap4GminAtom.h
+===================================================================
+--- Source/C++/Core/Ap4GminAtom.h	(revision 0)
++++ Source/C++/Core/Ap4GminAtom.h	(revision 0)
+@@ -0,0 +1,68 @@
++/*****************************************************************
++|
++|    AP4 - gmin Atoms 
++|
++|    Copyright 2002-2008 Axiomatic Systems, LLC
++|
++|
++|    This file is part of Bento4/AP4 (MP4 Atom Processing Library).
++|
++|    Unless you have obtained Bento4 under a difference license,
++|    this version of Bento4 is Bento4|GPL.
++|    Bento4|GPL is free software; you can redistribute it and/or modify
++|    it under the terms of the GNU General Public License as published by
++|    the Free Software Foundation; either version 2, or (at your option)
++|    any later version.
++|
++|    Bento4|GPL is distributed in the hope that it will be useful,
++|    but WITHOUT ANY WARRANTY; without even the implied warranty of
++|    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++|    GNU General Public License for more details.
++|
++|    You should have received a copy of the GNU General Public License
++|    along with Bento4|GPL; see the file COPYING.  If not, write to the
++|    Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
++|    02111-1307, USA.
++|
++****************************************************************/
++
++#ifndef _AP4_GMIN_ATOM_H_
++#define _AP4_GMIN_ATOM_H_
++
++/*----------------------------------------------------------------------
++|   includes
+++---------------------------------------------------------------------*/
++#include "Ap4Atom.h"
++
++/*----------------------------------------------------------------------
++|   AP4_GminAtom
+++---------------------------------------------------------------------*/
++class AP4_GminAtom : public AP4_Atom
++{
++public:
++    // class methods
++    static AP4_GminAtom* Create(AP4_Size size, AP4_ByteStream& stream);
++
++    // methods
++    AP4_GminAtom(AP4_UI16 graphics_mode, AP4_UI16 red, AP4_UI16 green, AP4_UI16 blue, AP4_UI16 balance);
++    virtual AP4_Result InspectFields(AP4_AtomInspector& inspector);
++    virtual AP4_Result WriteFields(AP4_ByteStream& stream);
++
++private:
++    // methods
++    AP4_GminAtom(AP4_UI32        size, 
++                 AP4_UI32        version,
++                 AP4_UI32        flags,
++                 AP4_ByteStream& stream);
++
++    // members
++    AP4_UI16 m_GraphicsMode;
++    AP4_UI16 m_OpColorRed;
++    AP4_UI16 m_OpColorGreen;
++    AP4_UI16 m_OpColorBlue;
++    AP4_UI16 m_Balance;
++    AP4_UI16 m_Reserved;
++
++};
++
++#endif // _AP4_GMIN_ATOM_H_
+Index: Source/C++/Core/Ap4HdlrAtom.cpp
+===================================================================
+--- Source/C++/Core/Ap4HdlrAtom.cpp	(revision 303)
++++ Source/C++/Core/Ap4HdlrAtom.cpp	(working copy)
+@@ -55,8 +55,21 @@
+     m_HandlerName(hdlr_name)
+ {
+     m_Size32 += 20+m_HandlerName.GetLength()+1;
+-    m_Reserved[0] = m_Reserved[1] = m_Reserved[2] = 0;
++    m_HandlerClass = m_VendorID = m_ComponentFlags = m_ComponentFlagsMask = 0;
+ }
++/*----------------------------------------------------------------------
++|   AP4_HdlrAtom::AP4_HdlrAtom
+++---------------------------------------------------------------------*/
++AP4_HdlrAtom::AP4_HdlrAtom(AP4_Atom::Type hdlr_type, const char* hdlr_name, AP4_Atom::Type hdlr_class, AP4_Atom::Type hdlr_vendor) :
++    AP4_Atom(AP4_ATOM_TYPE_HDLR, AP4_FULL_ATOM_HEADER_SIZE, 0, 0),
++    m_HandlerType(hdlr_type),
++    m_HandlerName(hdlr_name),
++    m_HandlerClass(hdlr_class),
++    m_VendorID(hdlr_vendor)
++{
++    m_Size32 += 20+m_HandlerName.GetLength()+1;
++    m_ComponentFlags = m_ComponentFlagsMask = 0;
++}
+ 
+ /*----------------------------------------------------------------------
+ |   AP4_HdlrAtom::AP4_HdlrAtom
+@@ -67,12 +80,12 @@
+                            AP4_ByteStream& stream) :
+     AP4_Atom(AP4_ATOM_TYPE_HDLR, size, version, flags)
+ {
+-    AP4_UI32 predefined;
+-    stream.ReadUI32(predefined);
++
++    stream.ReadUI32(m_HandlerClass);
+     stream.ReadUI32(m_HandlerType);
+-    stream.ReadUI32(m_Reserved[0]);
+-    stream.ReadUI32(m_Reserved[1]);
+-    stream.ReadUI32(m_Reserved[2]);
++    stream.ReadUI32(m_VendorID);
++    stream.ReadUI32(m_ComponentFlags);
++    stream.ReadUI32(m_ComponentFlagsMask);
+     
+     // read the name unless it is empty
+     int name_size = size-(AP4_FULL_ATOM_HEADER_SIZE+20);
+@@ -100,15 +113,15 @@
+     AP4_Result result;
+ 
+     // write the data
+-    result = stream.WriteUI32(0); // predefined
++    result = stream.WriteUI32(m_HandlerClass); // predefined
+     if (AP4_FAILED(result)) return result;
+     result = stream.WriteUI32(m_HandlerType);
+     if (AP4_FAILED(result)) return result;
+-    result = stream.WriteUI32(m_Reserved[0]);
++    result = stream.WriteUI32(m_VendorID);
+     if (AP4_FAILED(result)) return result;
+-    result = stream.WriteUI32(m_Reserved[1]);
++    result = stream.WriteUI32(m_ComponentFlags);
+     if (AP4_FAILED(result)) return result;
+-    result = stream.WriteUI32(m_Reserved[2]);
++    result = stream.WriteUI32(m_ComponentFlagsMask);
+     if (AP4_FAILED(result)) return result;
+     AP4_UI08 name_size = (AP4_UI08)m_HandlerName.GetLength();
+     if (AP4_FULL_ATOM_HEADER_SIZE+20+name_size > m_Size32) {
+@@ -137,5 +150,13 @@
+     inspector.AddField("handler_type", type);
+     inspector.AddField("handler_name", m_HandlerName.GetChars());
+ 
++    char clas[5];
++    AP4_FormatFourChars(clas, m_HandlerClass);
++    inspector.AddField("handler_class", clas);
++
++    char vendor[5];
++    AP4_FormatFourChars(vendor, m_VendorID);
++    inspector.AddField("vendor_id", vendor);
++
+     return AP4_SUCCESS;
+ }
+Index: Source/C++/Core/Ap4HdlrAtom.h
+===================================================================
+--- Source/C++/Core/Ap4HdlrAtom.h	(revision 303)
++++ Source/C++/Core/Ap4HdlrAtom.h	(working copy)
+@@ -52,6 +52,12 @@
+ const AP4_UI32 AP4_HANDLER_TYPE_JPEG = AP4_ATOM_TYPE('j','p','e','g');
+ const AP4_UI32 AP4_HANDLER_TYPE_ODSM = AP4_ATOM_TYPE('o','d','s','m');
+ const AP4_UI32 AP4_HANDLER_TYPE_SDSM = AP4_ATOM_TYPE('s','d','s','m');
++const AP4_UI32 AP4_HANDLER_TYPE_ALIS = AP4_ATOM_TYPE('a','l','i','s');
++const AP4_UI32 AP4_HANDLER_TYPE_QTCHAP = AP4_ATOM_TYPE('q','q','q','t');
++const AP4_UI32 AP4_HANDLER_CLASS_DHLR = AP4_ATOM_TYPE('d','h','l','r');
++const AP4_UI32 AP4_HANDLER_CLASS_MHLR = AP4_ATOM_TYPE('m','h','l','r');
++const AP4_UI32 AP4_HANDLER_VENDOR_ID_APPL = AP4_ATOM_TYPE('a','p','p','l');
++const AP4_UI32 AP4_HANDLER_VENDOR_ID_APP2 = AP4_ATOM_TYPE('a','p','p','2');
+ 
+ /*----------------------------------------------------------------------
+ |   AP4_HdlrAtom
+@@ -64,11 +70,14 @@
+ 
+     // methods
+     AP4_HdlrAtom(AP4_UI32 hdlr_type, const char* hdlr_name);
++	AP4_HdlrAtom(AP4_UI32 hdlr_type, const char* hdlr_name, AP4_UI32 hdlr_class, AP4_UI32 hdlr_vendor);
+     virtual AP4_Result InspectFields(AP4_AtomInspector& inspector);
+     virtual AP4_Result WriteFields(AP4_ByteStream& stream);
+ 
+     AP4_UI32   GetHandlerType() { return m_HandlerType; }
+     AP4_String GetHandlerName() { return m_HandlerName; }
++	AP4_UI32   GetHandlerClass() { return m_HandlerClass; }
++	AP4_UI32   GetVendorID() { return m_VendorID; }
+ 
+ private:
+     // methods
+@@ -78,8 +87,11 @@
+                  AP4_ByteStream& stream);
+ 
+     // members
+-    AP4_UI32   m_HandlerType;
+-    AP4_UI32   m_Reserved[3];
++	AP4_UI32   m_HandlerClass;
++	AP4_UI32   m_HandlerType;
++    AP4_UI32   m_VendorID;
++	AP4_UI32   m_ComponentFlags;
++	AP4_UI32   m_ComponentFlagsMask;
+     AP4_String m_HandlerName;
+ };
+ 
+Index: Source/C++/Core/Ap4SampleDescription.cpp
+===================================================================
+--- Source/C++/Core/Ap4SampleDescription.cpp	(revision 303)
++++ Source/C++/Core/Ap4SampleDescription.cpp	(working copy)
+@@ -484,3 +484,45 @@
+         default:                                          return "UNKNOWN";
+     }
+ }
++/*----------------------------------------------------------------------
++|   AP4_TextSampleDescription::AP4_TextSampleDescription
+++---------------------------------------------------------------------*/
++AP4_TextSampleDescription::AP4_TextSampleDescription(
++    AP4_UI32 display_flags, AP4_UI32 text_justify,
++                    AP4_UI16 bg_red, AP4_UI16 bg_green, AP4_UI16 bg_blue,
++                    AP4_UI16 fg_red, AP4_UI16 fg_green, AP4_UI16 fg_blue,
++                    AP4_UI16 font_number, AP4_UI16 font_face,
++                    AP4_UI16 deftextboxtop, AP4_UI16 deftextboxleft,
++                    AP4_UI16 deftextboxbottom, AP4_UI16 deftextboxright):
++    AP4_SampleDescription(TYPE_TEXT, AP4_ATOM_TYPE_TEXT, NULL)
++{
++    m_DisplayFlags = display_flags;
++    m_textJustification = text_justify;
++
++    m_bgColorRed = bg_red;
++    m_bgColorGreen = bg_green;
++    m_bgColorBlue = bg_blue;
++
++    m_FontNumber = font_number;
++    m_FontFace = font_face;
++    m_fgColorRed = fg_red;
++    m_fgColorGreen = fg_green;
++    m_fgColorBlue = fg_blue;
++    m_defTextBoxTop = deftextboxtop;
++    m_defTextBoxLeft = deftextboxleft;
++    m_defTextBoxBottom = deftextboxbottom;
++    m_defTextBoxRight = deftextboxright;
++}
++/*----------------------------------------------------------------------
++|   AP4_SampleDescription::ToAtom
+++---------------------------------------------------------------------*/
++AP4_Atom*
++AP4_TextSampleDescription::ToAtom() const
++{
++    return new AP4_TextSampleEntry(m_DisplayFlags, m_textJustification,
++                                   m_bgColorRed,  m_bgColorGreen, m_bgColorBlue,
++                                   m_fgColorRed, m_fgColorGreen, m_fgColorBlue,
++                                   m_FontNumber, m_FontFace,
++                                   m_defTextBoxTop, m_defTextBoxLeft,
++                                   m_defTextBoxBottom, m_defTextBoxRight);
++}
+\ No newline at end of file
+Index: Source/C++/Core/Ap4SampleDescription.h
+===================================================================
+--- Source/C++/Core/Ap4SampleDescription.h	(revision 303)
++++ Source/C++/Core/Ap4SampleDescription.h	(working copy)
+@@ -64,7 +64,8 @@
+         TYPE_UNKNOWN   = 0x00,
+         TYPE_MPEG      = 0x01,
+         TYPE_PROTECTED = 0x02,
+-        TYPE_AVC       = 0x03
++        TYPE_AVC       = 0x03,
++        TYPE_TEXT      = 0x04
+     };
+ 
+     // constructors & destructor
+@@ -366,7 +367,47 @@
+     // methods
+     AP4_Atom* ToAtom() const;
+ };
++/*----------------------------------------------------------------------
++|   AP4_TextSampleDescription
+++---------------------------------------------------------------------*/
++class AP4_TextSampleDescription : public AP4_SampleDescription
++{
++ public:
++    
+ 
++    AP4_TextSampleDescription(AP4_UI32 display_flags, AP4_UI32 text_justify,
++                              AP4_UI16 bg_red, AP4_UI16 bg_green, AP4_UI16 bg_blue,
++                              AP4_UI16 fg_red, AP4_UI16 fg_green, AP4_UI16 fg_blue,
++                              AP4_UI16 font_number, AP4_UI16 font_face,
++                              AP4_UI16 deftextboxtop, AP4_UI16 deftextboxleft,
++                              AP4_UI16 deftextboxbottom, AP4_UI16 deftextboxright);
++    
++  
++    
++    
++virtual AP4_Atom* ToAtom() const;
++
++
++ protected:
++    AP4_UI32 m_DisplayFlags;
++    AP4_UI32 m_textJustification;
++
++    AP4_UI16 m_bgColorRed;
++    AP4_UI16 m_bgColorGreen;
++    AP4_UI16 m_bgColorBlue;
++
++    AP4_UI16 m_defTextBoxTop;
++    AP4_UI16 m_defTextBoxLeft;
++    AP4_UI16 m_defTextBoxBottom;
++    AP4_UI16 m_defTextBoxRight;
++
++    AP4_UI16 m_FontNumber;
++    AP4_UI16 m_FontFace;
++
++    AP4_UI16 m_fgColorRed;
++    AP4_UI16 m_fgColorGreen;
++    AP4_UI16 m_fgColorBlue;
++};
+ /*----------------------------------------------------------------------
+ |   constants
+ +---------------------------------------------------------------------*/
+Index: Source/C++/Core/Ap4SampleEntry.cpp
+===================================================================
+--- Source/C++/Core/Ap4SampleEntry.cpp	(revision 303)
++++ Source/C++/Core/Ap4SampleEntry.cpp	(working copy)
+@@ -1059,3 +1059,233 @@
+     
+     return AP4_SUCCESS;
+ }
++/*----------------------------------------------------------------------
++|   AP4_TextSampleEntry::AP4_TextSampleEntry
+++---------------------------------------------------------------------*/
++AP4_TextSampleEntry::AP4_TextSampleEntry(AP4_Size         size, 
++                                             AP4_ByteStream&  stream,
++                                             AP4_AtomFactory& atom_factory) :
++    AP4_SampleEntry(AP4_ATOM_TYPE_TEXT, size)
++{
++    // read fields
++    AP4_Size fields_size = GetFieldsSize();
++    ReadFields(stream);
++}
++/*----------------------------------------------------------------------
++|   AP4_TextSampleEntry::AP4_TextSampleEntry
+++---------------------------------------------------------------------*/
++AP4_TextSampleEntry::AP4_TextSampleEntry(AP4_UI32 display_flags, AP4_UI32 text_justify,
++                                         AP4_UI16 bg_red, AP4_UI16 bg_green, AP4_UI16 bg_blue,
++                                         AP4_UI16 fg_red, AP4_UI16 fg_green, AP4_UI16 fg_blue,
++                                         AP4_UI16 font_number, AP4_UI16 font_face,
++                                         AP4_UI16 deftextboxtop, AP4_UI16 deftextboxleft,
++                                         AP4_UI16 deftextboxbottom, AP4_UI16 deftextboxright) :
++    AP4_SampleEntry(AP4_ATOM_TYPE_TEXT)
++    
++{
++
++    m_DisplayFlags = display_flags;
++    m_textJustification = text_justify;
++
++    m_bgColorRed = bg_red;
++    m_bgColorGreen = bg_green;
++    m_bgColorBlue = bg_blue;
++    m_defTextBoxTop = deftextboxtop;
++    m_defTextBoxLeft = deftextboxleft;
++    m_defTextBoxBottom = deftextboxbottom;
++    m_defTextBoxRight = deftextboxright;
++    m_TextReserved1[0] = 0x00;
++    m_TextReserved1[1] = 0x00;
++    m_TextReserved1[2] = 0x00;
++    m_TextReserved1[3] = 0x00;
++    m_TextReserved1[4] = 0x00;
++    m_TextReserved1[5] = 0x10;
++    m_TextReserved1[6] = 0x00;
++    m_TextReserved1[7] = 0x0D;
++    m_FontNumber = font_number;
++    m_FontFace = font_face;
++
++    m_TextReserved2[0] = 0x00;
++    m_TextReserved2[1] = 0x0D;
++    m_TextReserved2[2] = 0x00;
++    m_fgColorRed = fg_red;
++    m_fgColorGreen = fg_green;
++    m_fgColorBlue = fg_blue;
++
++    m_Size32 += 43;
++
++
++}
++/*----------------------------------------------------------------------
++|   AP4_TextSampleEntry::ToSampleDescription
+++---------------------------------------------------------------------*/
++AP4_SampleDescription*
++AP4_TextSampleEntry::ToSampleDescription()
++{
++    // create a sample description
++    return new AP4_TextSampleDescription(m_DisplayFlags, m_textJustification,
++                                         m_bgColorRed,  m_bgColorGreen, m_bgColorBlue,
++                                         m_fgColorRed,  m_fgColorGreen, m_fgColorBlue,
++                                         m_FontNumber, m_FontFace,
++                                         m_defTextBoxTop, m_defTextBoxLeft,
++                                         m_defTextBoxBottom, m_defTextBoxRight);
++}
++/*----------------------------------------------------------------------
++|  AP4_TextSampleEntry::ReadFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_TextSampleEntry::ReadFields(AP4_ByteStream& stream)
++{
++    AP4_Result result = AP4_SampleEntry::ReadFields(stream);
++    if (result < 0) return result;
++
++    result = stream.ReadUI32(m_DisplayFlags);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI32(m_textJustification);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_bgColorRed);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_bgColorGreen);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_bgColorBlue);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_defTextBoxTop);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_defTextBoxLeft);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_defTextBoxBottom);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_defTextBoxRight);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.Read(m_TextReserved1,8);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_FontNumber);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_FontFace);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.Read(m_TextReserved2,3);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_fgColorRed);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_fgColorGreen);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.ReadUI16(m_fgColorBlue);
++    if (AP4_FAILED(result)) return result;
++
++    return AP4_SUCCESS;
++}
++
++/*----------------------------------------------------------------------
++|   AP4_TextSampleEntry::WriteFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_TextSampleEntry::WriteFields(AP4_ByteStream& stream)
++{
++    AP4_Result result;
++
++    // write the fields of the base class
++    result = AP4_SampleEntry::WriteFields(stream);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI32(m_DisplayFlags);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI32(m_textJustification);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_bgColorRed);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_bgColorGreen);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_bgColorBlue);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_defTextBoxTop);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_defTextBoxLeft);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_defTextBoxBottom);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_defTextBoxRight);
++    if (AP4_FAILED(result)) return result;
++
++
++
++    result = stream.Write(m_TextReserved1,sizeof(m_TextReserved1));
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_FontNumber);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_FontFace);
++    if (AP4_FAILED(result)) return result;
++
++
++    result = stream.Write(m_TextReserved2,sizeof(m_TextReserved2));
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_fgColorRed);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_fgColorGreen);
++    if (AP4_FAILED(result)) return result;
++
++    result = stream.WriteUI16(m_fgColorBlue);
++    if (AP4_FAILED(result)) return result;
++
++    return AP4_SUCCESS;
++}
++
++/*----------------------------------------------------------------------
++|   AP4_TextSampleEntry::InspectFields
+++---------------------------------------------------------------------*/
++AP4_Result
++AP4_TextSampleEntry::InspectFields(AP4_AtomInspector& inspector)
++{
++
++    AP4_SampleEntry::InspectFields(inspector);
++
++    inspector.AddField("display_flags", m_DisplayFlags);
++    inspector.AddField("text_justification", m_textJustification);
++    inspector.AddField("bg_color_red", m_bgColorRed);
++    inspector.AddField("bg_color_green", m_bgColorGreen);
++    inspector.AddField("bg_color_blue", m_bgColorBlue);
++    inspector.AddField("def_text_box_top", m_defTextBoxTop);
++    inspector.AddField("def_text_box_left", m_defTextBoxLeft);
++    inspector.AddField("def_text_box_bottom", m_defTextBoxBottom);
++    inspector.AddField("def_text_box_right", m_defTextBoxRight);
++    inspector.AddField("font_number", m_FontNumber);
++    inspector.AddField("font_face", m_FontFace);
++    inspector.AddField("fg_color_red", m_fgColorRed);
++    inspector.AddField("fg_color_green", m_fgColorGreen);
++    inspector.AddField("fg_color_blue", m_fgColorBlue);
++    return AP4_SUCCESS;
++}
++/*----------------------------------------------------------------------
++|   AP4_TextSampleEntry::GetFieldsSize
+++---------------------------------------------------------------------*/
++AP4_Size
++AP4_TextSampleEntry::GetFieldsSize()
++{
++    return AP4_SampleEntry::GetFieldsSize()+43;
++}
+\ No newline at end of file
+Index: Source/C++/Core/Ap4SampleEntry.h
+===================================================================
+--- Source/C++/Core/Ap4SampleEntry.h	(revision 303)
++++ Source/C++/Core/Ap4SampleEntry.h	(working copy)
+@@ -357,5 +357,56 @@
+     AP4_UI16 m_HighestCompatibleVersion;
+     AP4_UI32 m_MaxPacketSize;
+ };
++/*---------------------------------------------------------------------+
++|   AP4_TextSampleEntry                                                |
+++---------------------------------------------------------------------*/
++class AP4_TextSampleEntry : public AP4_SampleEntry
++{
++public:
++    
++    // methods
++    AP4_TextSampleEntry(AP4_UI32 display_flags, AP4_UI32 text_justify,
++                        AP4_UI16 bg_red, AP4_UI16 bg_green, AP4_UI16 bg_blue,
++                        AP4_UI16 fg_red, AP4_UI16 fg_green, AP4_UI16 fg_blue,
++                        AP4_UI16 font_number, AP4_UI16 font_face,
++                        AP4_UI16 deftextboxtop, AP4_UI16 deftextboxleft,
++                        AP4_UI16 deftextboxbottom, AP4_UI16 deftextboxright);
+ 
++    AP4_TextSampleEntry(  AP4_Size         size,
++                          AP4_ByteStream&  stream,
++                          AP4_AtomFactory& atom_factory);
++
++    virtual AP4_Result InspectFields(AP4_AtomInspector& inspector);
++    virtual AP4_Result WriteFields(AP4_ByteStream& stream);
++
++    AP4_SampleDescription* ToSampleDescription();
++protected:
++    // methods
++    virtual AP4_Size   GetFieldsSize();
++    virtual AP4_Result ReadFields(AP4_ByteStream& stream);
++
++ 
++    // members
++    AP4_UI32 m_DisplayFlags;
++    AP4_UI32 m_textJustification;
++
++    AP4_UI16 m_bgColorRed;
++    AP4_UI16 m_bgColorGreen;
++    AP4_UI16 m_bgColorBlue;
++
++    AP4_UI16 m_defTextBoxTop;
++    AP4_UI16 m_defTextBoxLeft;
++    AP4_UI16 m_defTextBoxBottom;
++    AP4_UI16 m_defTextBoxRight;
++    AP4_UI08 m_TextReserved1[8];
++
++    AP4_UI16 m_FontNumber;
++    AP4_UI16 m_FontFace;
++    AP4_UI08 m_TextReserved2[3];
++
++    AP4_UI16 m_fgColorRed;
++    AP4_UI16 m_fgColorGreen;
++    AP4_UI16 m_fgColorBlue;
++    //bytecount 43
++};
+ #endif // _AP4_SAMPLE_ENTRY_H_
+Index: Source/C++/Core/Ap4SampleTable.cpp
+===================================================================
+--- Source/C++/Core/Ap4SampleTable.cpp	(revision 303)
++++ Source/C++/Core/Ap4SampleTable.cpp	(working copy)
+@@ -86,14 +86,18 @@
+     for (AP4_Ordinal i=0; i<sample_count; i++) {
+         AP4_Sample sample;
+         GetSample(i, sample);
+-        
++
+         // update DTS table
+         AP4_UI64 new_dts = sample.GetDts();
+-        if (i > 0) {
++       // if (i > 0) {
+             AP4_UI32 new_dts_delta = 0;
+             if (new_dts > current_dts) {
+                 new_dts_delta = (AP4_UI32)(new_dts-current_dts);
+             }
++            if (i==0) {
++                current_dts_delta = new_dts_delta;
++            }
++            
+             if (new_dts_delta != current_dts_delta && current_dts_delta_run != 0) {
+                 // emmit a new stts entry
+                 stts->AddEntry(current_dts_delta_run, current_dts_delta);
+@@ -101,11 +105,18 @@
+                 // reset the run count
+                 current_dts_delta_run = 0;
+             } 
++            
+             ++current_dts_delta_run;
+             current_dts_delta = new_dts_delta;
+-        }
++       // }
+         current_dts = new_dts;
+         
++        // if it's the last run, add the final entry
++        if (i == sample_count-1) {
++
++            stts->AddEntry(current_dts_delta_run, current_dts_delta);
++        }
++        
+         // update CTS table
+         AP4_UI64 new_cts = sample.GetCts();
+         AP4_UI32 new_cts_delta = 0;
+@@ -161,9 +172,8 @@
+         ++current_samples_in_chunk;        
+     }
+ 
+-    // (we assume the last sample's duration is the same as the next-to-last)
+-    stts->AddEntry(current_dts_delta_run+1, current_dts_delta);
+ 
++
+     // finish the ctts table if we have one
+     if (ctts) {
+         AP4_ASSERT(current_cts_delta_run != 0);
+Index: Source/C++/Core/Ap4TkhdAtom.h
+===================================================================
+--- Source/C++/Core/Ap4TkhdAtom.h	(revision 303)
++++ Source/C++/Core/Ap4TkhdAtom.h	(working copy)
+@@ -77,7 +77,7 @@
+     void     SetWidth(AP4_UI32 width)   { m_Width = width;   }
+     AP4_UI32 GetHeight()                { return m_Height;   }
+     void     SetHeight(AP4_UI32 height) { m_Height = height; }
+-
++    void     SetEnabled(AP4_Byte flag)	{ m_Flags = (m_Flags & (254 + flag)); }
+  private:
+     // methods
+     AP4_TkhdAtom(AP4_UI32        size, 
+Index: Source/C++/Core/Ap4Track.cpp
+===================================================================
+--- Source/C++/Core/Ap4Track.cpp	(revision 303)
++++ Source/C++/Core/Ap4Track.cpp	(working copy)
+@@ -92,6 +92,11 @@
+             hdlr_name = "Bento4 Text Handler";
+             break;
+ 
++        case TYPE_QTCHAP:
++            hdlr_type = AP4_HANDLER_TYPE_QTCHAP;
++            hdlr_name = "Bento4 QtChapter Handler";
++            break;
++
+         default:
+             hdlr_type = 0;
+             hdlr_name = NULL;
+Index: Source/C++/Core/Ap4Track.h
+===================================================================
+--- Source/C++/Core/Ap4Track.h	(revision 303)
++++ Source/C++/Core/Ap4Track.h	(working copy)
+@@ -66,7 +66,8 @@
+         TYPE_HINT    = 4,
+         TYPE_TEXT    = 5,
+         TYPE_JPEG    = 6,
+-        TYPE_RTP     = 7
++        TYPE_RTP     = 7,
++        TYPE_QTCHAP  = 8  //Quicktime Chapter Track
+     } Type;
+ 
+     // methods
+Index: Source/C++/Core/Ap4TrakAtom.cpp
+===================================================================
+--- Source/C++/Core/Ap4TrakAtom.cpp	(revision 303)
++++ Source/C++/Core/Ap4TrakAtom.cpp	(working copy)
+@@ -37,6 +37,9 @@
+ #include "Ap4SmhdAtom.h"
+ #include "Ap4HmhdAtom.h"
+ #include "Ap4NmhdAtom.h"
++#include "Ap4GminAtom.h"
++#include "Ap4GmhdTextAtom.h"
++#include "Ap4AlisAtom.h"
+ #include "Ap4DrefAtom.h"
+ #include "Ap4UrlAtom.h"
+ #include "Ap4StcoAtom.h"
+@@ -87,6 +90,10 @@
+ 
+     // create a media header atom for minf (vmhd, smhd, hmhd or nmhd)
+     AP4_Atom* minf_header;
++
++    // create a media header atom for minf in case of container type header (gmhd)
++    AP4_ContainerAtom* minf_header2 = NULL;
++
+     switch (hdlr_type) {
+         case AP4_HANDLER_TYPE_VIDE:
+             minf_header = new AP4_VmhdAtom(0, 0, 0, 0);
+@@ -96,6 +103,36 @@
+             minf_header = new AP4_SmhdAtom(0);
+             break;
+ 
++        case AP4_HANDLER_TYPE_QTCHAP:
++
++            // Generate needed child atoms
++            AP4_GminAtom* gmin;
++            AP4_GmhdTextAtom* gmhdtext;
++            AP4_HdlrAtom* alis_hdlr;
++
++            // build the Generic Media Header
++            minf_header2 = new AP4_ContainerAtom(AP4_ATOM_TYPE_GMHD);
++
++            // Generic Media Information a child of gmhd
++            gmin = new AP4_GminAtom(64,32768,32768,32768,0);
++            minf_header2->AddChild(gmin);
++
++            // Special Text Description atom is a child of gmhd atom
++            gmhdtext = new AP4_GmhdTextAtom();
++            minf_header2->AddChild(gmhdtext);
++
++            // build the secondary Data Handler
++            alis_hdlr = new AP4_HdlrAtom(AP4_HANDLER_TYPE_ALIS, "Bento4 Alis Handler",AP4_HANDLER_CLASS_DHLR, AP4_HANDLER_VENDOR_ID_APPL);
++            minf->AddChild(alis_hdlr);
++
++            // replace the main handler with a text Media Handler
++            hdlr = new AP4_HdlrAtom(AP4_HANDLER_TYPE_TEXT, "Bento4 Text Handler", AP4_HANDLER_CLASS_MHLR, AP4_HANDLER_VENDOR_ID_APP2);
++
++            // Chapter tracks should be disabled, they aren't played, only referenced
++            m_TkhdAtom->SetEnabled(0);
++
++            break;
++
+         default:
+             minf_header = new AP4_NmhdAtom();
+             break;
+@@ -105,11 +142,17 @@
+     AP4_ContainerAtom* dinf = new AP4_ContainerAtom(AP4_ATOM_TYPE_DINF);
+ 
+     // create a url atom as a ref for dref
+-    AP4_Atom* url = new AP4_UrlAtom(); // local ref
++    AP4_Atom* url;
+ 
++    // Chapter tracks use an alis reference atom
++    if (hdlr_type == AP4_HANDLER_TYPE_QTCHAP){
++        url = new AP4_AlisAtom(); }
++    else { url = new AP4_UrlAtom(); }// local ref
++
+     // create a dref atom for dinf
+     AP4_DrefAtom* dref = new AP4_DrefAtom(&url, 1);
+ 
++
+     // create a stbl atom for minf
+     AP4_ContainerAtom* stbl;
+     result = sample_table->GenerateStblAtom(stbl);
+@@ -119,7 +162,11 @@
+     dinf->AddChild(dref);
+ 
+     // populate the minf atom
+-    minf->AddChild(minf_header);
++    // use the minf_header2 if it's been assigned
++    if (minf_header2 != NULL) {
++        minf->AddChild(minf_header2,0); 
++    } else { minf->AddChild(minf_header); }
++
+     minf->AddChild(dinf);
+     if (stbl) minf->AddChild(stbl);
+ 
