@@ -207,7 +207,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;C:\Users\andy\Documents\Visual Studio 2008\Projects\faac-1.28\include&quot;;../include"
+				AdditionalIncludeDirectories="../include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_LIB"
 				StringPooling="true"
 				RuntimeLibrary="0"

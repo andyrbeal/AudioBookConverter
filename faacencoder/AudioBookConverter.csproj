@@ -222,7 +222,7 @@
     <None Include="Resources\cross_small.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\faac-1.28\faacdotnet\faacdotnet.vcproj">
+    <ProjectReference Include="..\faacdotnet\faacdotnet.vcproj">
       <Project>{E5FF19D3-22A1-4E33-A0FC-3AB326F65618}</Project>
       <Name>faacdotnet</Name>
     </ProjectReference>

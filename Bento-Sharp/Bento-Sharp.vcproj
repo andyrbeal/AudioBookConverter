@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\svn\Bento4svn\Source\C++\metadata&quot;;&quot;..\..\svn\Bento4svn\Source\C++\crypto&quot;;&quot;..\..\svn\Bento4svn\Source\C++\codecs&quot;;&quot;..\..\svn\Bento4svn\Source\C++\capi&quot;;&quot;..\..\svn\Bento4svn\Source\C++\Adapters&quot;;&quot;..\..\svn\Bento4svn\Source\C++\System\stdc&quot;;&quot;..\..\svn\Bento4svn\Source\C++\Core&quot;"
+				AdditionalIncludeDirectories="&quot;..\Bento4svn\Source\C++\metadata&quot;;&quot;..\Bento4svn\Source\C++\crypto&quot;;&quot;..\Bento4svn\Source\C++\codecs&quot;;&quot;..\Bento4svn\Source\C++\capi&quot;;&quot;..\Bento4svn\Source\C++\Adapters&quot;;&quot;..\Bento4svn\Source\C++\System\stdc&quot;;&quot;..\Bento4svn\Source\C++\Core&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -200,7 +200,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\svn\Bento4svn\Source\C++\metadata&quot;;&quot;..\..\svn\Bento4svn\Source\C++\crypto&quot;;&quot;..\..\svn\Bento4svn\Source\C++\codecs&quot;;&quot;..\..\svn\Bento4svn\Source\C++\capi&quot;;&quot;..\..\svn\Bento4svn\Source\C++\Adapters&quot;;&quot;..\..\svn\Bento4svn\Source\C++\System\stdc&quot;;&quot;..\..\svn\Bento4svn\Source\C++\Core&quot;"
+				AdditionalIncludeDirectories="&quot;..\Bento4svn\Source\C++\metadata&quot;;&quot;..\Bento4svn\Source\C++\crypto&quot;;&quot;..\Bento4svn\Source\C++\codecs&quot;;&quot;..\Bento4svn\Source\C++\capi&quot;;&quot;..\Bento4svn\Source\C++\Adapters&quot;;&quot;..\Bento4svn\Source\C++\System\stdc&quot;;&quot;..\Bento4svn\Source\C++\Core&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				FloatingPointModel="2"
@@ -275,7 +275,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\svn\Bento4svn\Source\C++\metadata&quot;;&quot;..\..\svn\Bento4svn\Source\C++\crypto&quot;;&quot;..\..\svn\Bento4svn\Source\C++\codecs&quot;;&quot;..\..\svn\Bento4svn\Source\C++\capi&quot;;&quot;..\..\svn\Bento4svn\Source\C++\Adapters&quot;;&quot;..\..\svn\Bento4svn\Source\C++\System\stdc&quot;;&quot;..\..\svn\Bento4svn\Source\C++\Core&quot;"
+				AdditionalIncludeDirectories="&quot;..\Bento4svn\Source\C++\metadata&quot;;&quot;..\Bento4svn\Source\C++\crypto&quot;;&quot;..\Bento4svn\Source\C++\codecs&quot;;&quot;..\Bento4svn\Source\C++\capi&quot;;&quot;..\Bento4svn\Source\C++\Adapters&quot;;&quot;..\Bento4svn\Source\C++\System\stdc&quot;;&quot;..\Bento4svn\Source\C++\Core&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				FloatingPointModel="2"

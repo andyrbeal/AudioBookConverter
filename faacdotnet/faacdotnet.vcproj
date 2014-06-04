@@ -49,7 +49,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="../libfaac/;../include/;c:\Users\andy\Documents\Visual Studio 2008\Projects\M4BBuilder\faac-1.28\include\"
+				AdditionalIncludeDirectories="&quot;..\faac-1.28\include&quot;;&quot;..\faac-1.28\libfaac&quot;"
 				PreprocessorDefinitions="WIN32"
 				RuntimeLibrary="3"
 				BufferSecurityCheck="false"
@@ -213,7 +213,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;C:\Users\andy\Documents\Visual Studio 2008\Projects\faac-1.28\include&quot;;&quot;C:\Users\andy\Documents\Visual Studio 2008\Projects\faac-1.28\libfaac&quot;"
+				AdditionalIncludeDirectories="&quot;..\faac-1.28\include&quot;;&quot;..\faac-1.28\libfaac&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
